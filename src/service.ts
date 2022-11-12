@@ -36,6 +36,10 @@ export const services = {
         "methods": ["DELETE"],
         "path": "logout",
       },
+      "user": {
+        "methods": ["GET"],
+        "path": "user",
+      },
     },
   },
   "permission": {

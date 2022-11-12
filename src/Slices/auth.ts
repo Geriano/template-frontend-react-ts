@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import AuthService, { LoginSuccessResponse, Permission, Role } from '../Services/auth'
+import axios from 'axios'
+import AuthService, { LoginSuccessResponse, Permission, Role, User } from '../Services/auth'
 
 export interface UserState {
   id: number
@@ -13,6 +14,7 @@ export interface UserState {
 }
 
 export interface State {
+  authenticated: boolean
   user: UserState,
   token: string
 }
@@ -25,6 +27,7 @@ export interface Login {
 export const name = 'auth'
 
 export const initialState: State = {
+  authenticated: false,
   user: {
     id: 0,
     name: '',
@@ -35,10 +38,18 @@ export const initialState: State = {
     permissions: [],
     token: '',
   },
-  token: '',
+  token: localStorage.getItem('token') || '',
 }
 
-const login = createAsyncThunk('auth/login', async ({ username, password }: Login, api) => {
+export const loginByToken = createAsyncThunk('auth/login-by-current-token', async (token: string, api) => {
+  try {
+    return await AuthService.loginByToken(token)
+  } catch (e) {
+    return api.rejectWithValue(e)
+  }
+})
+
+export const login = createAsyncThunk('auth/login', async ({ username, password }: Login, api) => {
   try {
     return await AuthService.login(username, password)
   } catch (e) {
@@ -46,13 +57,20 @@ const login = createAsyncThunk('auth/login', async ({ username, password }: Logi
   }
 })
 
-const logout = createAsyncThunk('auth/logout', () => AuthService.logout())
+export const logout = createAsyncThunk('auth/logout', async (_, api) => {
+  try {
+    AuthService.logout()
+  } catch (e) {
+    api.rejectWithValue(e)
+  }
+})
 
 export const slice = createSlice({
   name,
   initialState,
-  reducers: {
-    [login.fulfilled.name]: (state: State, action: PayloadAction<LoginSuccessResponse>)  => {
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(login.fulfilled, (state: State, action: PayloadAction<LoginSuccessResponse>)  => {
       const { user, token } = action.payload
 
       state.user.id = user.id
@@ -64,10 +82,13 @@ export const slice = createSlice({
       state.user.roles = user.roles
 
       state.token = token
+      state.authenticated = true
 
       localStorage.setItem('token', token)
-    },
-    [login.rejected.name]: (state: State) => {
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+    })
+
+    builder.addCase(login.rejected, (state: State) => {
       state.user.id = 0
       state.user.name = ''
       state.user.email = ''
@@ -78,10 +99,35 @@ export const slice = createSlice({
       state.user.token = ''
 
       state.token = ''
+      state.authenticated = false
 
       localStorage.removeItem('token')
-    },
-    [logout.fulfilled.name]: (state: State) => {
+      axios.defaults.headers.common.Authorization = undefined
+    })
+
+    builder.addCase(loginByToken.fulfilled, (state: State, action: PayloadAction<User>) => {
+      const { id, name, email, username, profile_photo_url, permissions, roles } = action.payload
+
+      state.authenticated = true
+      state.user.id = id
+      state.user.name = name
+      state.user.email = email
+      state.user.username = username
+      state.user.profile_photo_url = profile_photo_url
+      state.user.permissions = permissions
+      state.user.roles = roles
+
+      axios.defaults.headers.common.Authorization = `Bearer ${state.token}`
+    })
+
+    builder.addCase(loginByToken.rejected, (state: State) => {
+      state.token = ''
+
+      localStorage.removeItem('token')
+      axios.defaults.headers.common.Authorization = undefined
+    })
+
+    builder.addCase(logout.fulfilled, (state: State) => {
       state.user.id = 0
       state.user.name = ''
       state.user.email = ''
@@ -92,13 +138,17 @@ export const slice = createSlice({
       state.user.token = ''
 
       state.token = ''
+      state.authenticated = false
 
       localStorage.removeItem('token')
-    },
-    [logout.rejected.name]: (state: State) => {
+    })
+
+    builder.addCase(logout.rejected, (state: State) => {
       // 
-    },
+    })
   },
 })
+
+export const actions = slice.actions
 
 export default slice.reducer

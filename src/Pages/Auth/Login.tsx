@@ -1,26 +1,31 @@
+import React, { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { route } from "../../service";
+import { login } from "../../Slices/auth";
 import Card from "../../Components/Card";
 import Input from "../../Components/Input";
-import { useForm } from "../../form";
-import { route } from "../../service";
-import { LoginSuccessResponse } from "../../Services/auth";
+import { useState } from "react";
 
 export default function () {
-  const form = useForm({
-    username: '',
-    password: '',
-  })
+  const dispatch = useAppDispatch()
 
-  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const input = (name: string, e: React.FormEvent<HTMLInputElement>) => {
+    const { value } = e.target as HTMLInputElement
+    
+    switch(name) {
+      case 'username':
+        return setUsername(value)
+      case 'password':
+        return setPassword(value)
+    }
+  }
+
+  const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    try {
-      const response = await form.post<LoginSuccessResponse>(route('authentication', 'login')!)
-      const {
-        user, token
-      } = response
-
-      form.reset()
-    } catch (e) {}
+    dispatch(login({ username, password }))
   }
 
   return (
@@ -31,7 +36,7 @@ export default function () {
         <Card
           footer={
             <div className="flex items-center justify-end px-2 py-1 rounded-b-md">
-              <button className="bg-green-500 px-3 py-1 rounded-md">
+              <button className="bg-green-500 px-3 py-1 rounded-md capitalize">
                 login
               </button>
             </div>
@@ -43,6 +48,7 @@ export default function () {
             </label>
 
             <Input
+              onInput={e => input('username', e)}
               type="text"
               name="username"
               placeholder="Username"
@@ -58,6 +64,7 @@ export default function () {
             </label>
 
             <Input
+              onInput={e => input('password', e)}
               type="password"
               name="password"
               placeholder="Password"

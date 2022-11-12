@@ -10,21 +10,34 @@ export interface Role {
   permissions: Permission[]
 }
 
+export interface User {
+  id: number
+  name: string
+  email: string
+  username: string
+  profile_photo_url?: string
+  permissions: Permission[]
+  roles: Role[]
+}
+
 export interface LoginSuccessResponse {
-  user: {
-    id: number
-    name: string
-    email: string
-    username: string
-    profile_photo_url?: string
-    permissions: Permission[]
-    roles: Role[]
-  },
+  message: string
+  user: User,
   token: string
 }
 
 export interface RegsiterSuccessResponse {
   message: string
+}
+
+export const loginByToken = async (token: string) => {
+  const { data: response } = await axios.get(route('authentication', 'user')!, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  })
+
+  return response as User
 }
 
 export const login = async (username: string, password: string) => {
@@ -46,5 +59,5 @@ export const register = async (name: string, email: string, username: string, pa
 export const logout = () => axios.delete(route('authentication', 'logout')!)
 
 export default {
-  login, logout
+  login, logout, register, loginByToken
 }

@@ -1,12 +1,12 @@
-import { useDispatch, useSelector } from "react-redux"
-import { route } from "./service"
-import { RootState } from "./store"
+import { useAppSelector } from "./hooks"
 
 export default () => {
+  const { user } = useAppSelector(state => state.auth)
+
   return (
     <>
       <h1 className="text-red-500 text-7xl text-center">
-        { route('authentication', 'login') }
+        { user.name }
       </h1>
     </>
   )
