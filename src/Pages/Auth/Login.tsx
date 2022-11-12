@@ -1,29 +1,55 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "../../hooks";
 import { login } from "../../Slices/auth";
 import Card from "../../Components/Card";
 import Input from "../../Components/Input";
+import { RequestRejected, ValidationErrorResponse } from "../../Services/auth";
+import classNames from "classnames";
 
 export default function () {
   const dispatch = useAppDispatch()
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [form, setForm] = useState({
+    username: '',
+    password: '',
+  })
 
-  const input = (name: string, e: React.FormEvent<HTMLInputElement>) => {
+  const [errors, setErrors] = useState({
+    username: '',
+    password: '',
+  })
+
+  const [processing, setProcessing] = useState(false)
+
+  const input = (name: 'username'|'password', e: React.FormEvent<HTMLInputElement>) => {
     const { value } = e.target as HTMLInputElement
-    
-    switch(name) {
-      case 'username':
-        return setUsername(value)
-      case 'password':
-        return setPassword(value)
-    }
+    setForm({
+      ...form,
+      [name]: value,
+    })
   }
 
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    dispatch(login({ username, password }))
+
+    setProcessing(true)
+
+    dispatch(login({
+      username: form.username, 
+      password: form.password,
+    }))
+      .unwrap()
+      .catch((e: RequestRejected) => {
+        if (e.code === 422) {
+          const { errors: es } = e.data as ValidationErrorResponse
+          const entries = Object.fromEntries(es.map(error => [error.field, error.message]))
+          setErrors({
+            username: entries.username || '',
+            password: entries.password || '',
+          })
+        }
+      })
+      .finally(() => setProcessing(false))
   }
 
   return (
@@ -34,13 +60,18 @@ export default function () {
         <Card
           footer={
             <div className="flex items-center justify-end px-2 py-1 rounded-b-md">
-              <button className="bg-green-500 px-3 py-1 rounded-md capitalize">
-                login
+              <button className="bg-green-500 text-gray-50 px-3 py-1 rounded-md capitalize">
+                <div className="flex items-center space-x-1">
+                  { processing ? <i className="mdi mdi-loading animate-spin"></i> : <i className="mdi mdi-check"></i> }
+                  <p className="capitalize font-semibold">
+                    login
+                  </p>
+                </div>
               </button>
             </div>
           }
         >
-          <div className="flex flex-col space-y-2 p-4">
+          <div className="flex flex-col space-y-2 py-4 px-6">
             <label htmlFor="username" className="capitalize">
               username
             </label>
@@ -50,12 +81,14 @@ export default function () {
               type="text"
               name="username"
               placeholder="Username"
-              className="dark:border-gray-700"
+              className={classNames("dark:border-gray-700", {
+                'outline outline-1 outline-red-500 focus:outline-red-500': errors.username
+              })}
               autoFocus
               required
             />
 
-            {/* <p className="text-right text-red-500 text-sm">Username is required</p> */}
+            { errors.username && <p className="text-right text-red-500 text-sm">{errors.username}</p> }
 
             <label htmlFor="password" className="capitalize">
               password
@@ -66,11 +99,13 @@ export default function () {
               type="password"
               name="password"
               placeholder="Password"
-              className="dark:border-gray-700"
+              className={classNames("dark:border-gray-700", {
+                'outline outline-1 outline-red-500 focus:outline-red-500': errors.password
+              })}
               required
             />
 
-            {/* <p className="text-right text-red-500 text-sm">Wrong password</p> */}
+            { errors.password && <p className="text-right text-red-500 text-sm">{errors.password}</p> }
           </div>
         </Card>
       </form>

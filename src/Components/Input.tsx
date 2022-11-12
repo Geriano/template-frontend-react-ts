@@ -19,7 +19,7 @@ export default function (props: Props) {
     <input 
       type="text"
       {...props}
-      className={classNames("bg-transparent px-3 py-1 border rounded-md", className)}
+      className={classNames("bg-transparent px-3 py-1 border rounded-md ring-0 outline-none", className)}
     />
   )
 }

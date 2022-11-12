@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import axios from 'axios'
-import AuthService, { LoginSuccessResponse, Permission, Role, User } from '../Services/auth'
+import axios, { AxiosError } from 'axios'
+import AuthService, { LoginSuccessResponse, Permission, RequestRejected, Role, User } from '../Services/auth'
 
 export interface UserState {
   id: number
@@ -53,7 +53,11 @@ export const login = createAsyncThunk('auth/login', async ({ username, password 
   try {
     return await AuthService.login(username, password)
   } catch (e) {
-    return api.rejectWithValue(e)
+    const error = e as AxiosError
+    return api.rejectWithValue({
+      code: error.response?.status,
+      data: error.response?.data,
+    })
   }
 })
 
@@ -88,7 +92,7 @@ export const slice = createSlice({
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
     })
 
-    builder.addCase(login.rejected, (state: State) => {
+    builder.addCase(login.rejected, (state: State, action) => {
       state.user.id = 0
       state.user.name = ''
       state.user.email = ''

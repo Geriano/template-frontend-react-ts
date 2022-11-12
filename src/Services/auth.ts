@@ -26,6 +26,20 @@ export interface LoginSuccessResponse {
   token: string
 }
 
+export interface ValidationError {
+  field: string
+  message: string
+}
+
+export interface ValidationErrorResponse {
+  errors: ValidationError[]
+}
+
+export interface RequestRejected<T = any> {
+  code: number
+  data: T | ValidationErrorResponse
+}
+
 export interface RegsiterSuccessResponse {
   message: string
 }
