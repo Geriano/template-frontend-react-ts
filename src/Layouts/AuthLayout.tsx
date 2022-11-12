@@ -23,7 +23,7 @@ export default function () {
   }, [])
 
   if (authenticated) {
-    return <Navigate to='/' />
+    return <Navigate to='/dashboard' />
   }
 
   return (

@@ -70,7 +70,7 @@ export const register = async (name: string, email: string, username: string, pa
   return response as RegsiterSuccessResponse
 }
 
-export const logout = () => axios.delete(route('authentication', 'logout')!)
+export const logout = () => axios.post(route('authentication', 'logout')!)
 
 export default {
   login, logout, register, loginByToken

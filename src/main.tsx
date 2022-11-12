@@ -10,11 +10,12 @@ import {
 } from "react-router-dom";
 import App from './App'
 import './index.css'
+
 import DashboardLayout from './Layouts/DashboardLayout';
 import AuthLayout from './Layouts/AuthLayout';
 import Login from './Pages/Auth/Login';
 
-const router = createBrowserRouter(
+export const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route
@@ -23,7 +24,7 @@ const router = createBrowserRouter(
           <DashboardLayout />
         }
       >
-        <Route path='/' element={<App />} />
+        <Route path='/dashboard' element={<App />} />
       </Route>
 
       <Route

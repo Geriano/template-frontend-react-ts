@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
-import AuthService, { LoginSuccessResponse, Permission, RequestRejected, Role, User } from '../Services/auth'
+import AuthService, { LoginSuccessResponse, Permission, Role, User } from '../Services/auth'
 
 export interface UserState {
   id: number
@@ -92,7 +92,7 @@ export const slice = createSlice({
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
     })
 
-    builder.addCase(login.rejected, (state: State, action) => {
+    builder.addCase(login.rejected, (state: State) => {
       state.user.id = 0
       state.user.name = ''
       state.user.email = ''

@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit"
 import auth from "./Slices/auth"
+import modal from "./Slices/modal"
 
 export const store = configureStore({
   reducer: {
     auth,
+    modal,
   },
 })
 
