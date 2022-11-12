@@ -41,9 +41,10 @@ export default function () {
   const { queue: modals } = useAppSelector(state => state.modal)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const location = useLocation()
 
   if (!authenticated) {
-    return <Navigate to="/login" />
+    return <Navigate to={"/login?from=" + location.pathname} />
   }
 
   const [open, setOpen] = useState({

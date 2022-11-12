@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { loginByToken } from '../Slices/auth'
 
@@ -8,6 +8,9 @@ export default function () {
   const dispatch = useAppDispatch()
   const [processing, setProcessing] = useState(false)
   const [ready, setReady] = useState(false)
+  const location = useLocation()
+  const search = new URLSearchParams(location.search)
+  const to = search.get('from') || '/dashboard'
 
   useEffect(() => {
     if (!authenticated) {
@@ -23,7 +26,7 @@ export default function () {
   }, [])
 
   if (authenticated) {
-    return <Navigate to='/dashboard' />
+    return <Navigate to={to} />
   }
 
   return (
