@@ -14,6 +14,7 @@ import './index.css'
 import DashboardLayout from './Layouts/DashboardLayout';
 import AuthLayout from './Layouts/AuthLayout';
 import Login from './Pages/Auth/Login';
+import Profile from './Pages/Auth/Profile';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,6 +26,7 @@ export const router = createBrowserRouter(
         }
       >
         <Route path='/dashboard' element={<App />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
 
       <Route

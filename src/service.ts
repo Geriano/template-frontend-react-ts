@@ -42,6 +42,32 @@ export const services = {
       },
     },
   },
+  "profile": {
+    "hostname": "http://localhost:3333",
+    "routes": {
+      "update-user-general-information": {
+        "method": ["PATCH"],
+        "path": "/update-user-general-information"
+      },
+      "photo": {
+        "method": ["GET"],
+        "path": "/{path}",
+        "params": {
+          "path": {
+            "required": true,
+          },
+        },
+      },
+      "remove-profile-photo": {
+        "method": ["DELETE"],
+        "path": "/remove-profile-photo",
+      },
+      "update-user-password": {
+        "method": ["PATCH"],
+        "path": "/update-user-password",
+      },
+    },
+  },
   "permission": {
     "hostname": "http://localhost:3333",
     "prefix": "/permission",

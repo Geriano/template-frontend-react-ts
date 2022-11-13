@@ -4,6 +4,7 @@ import { Link, Navigate, Outlet, useLocation, useNavigate, useResolvedPath } fro
 import Button from '../Components/Button'
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { logout } from '../Slices/auth'
+import { remove } from '../Slices/flash'
 
 export interface SidebarLinkProps {
   icon: string
@@ -36,16 +37,13 @@ export const SidebarLink = ({ icon, name, to, open }: SidebarLinkProps) => {
   )
 }
 
-export default function () {
+export default function DashboardLayout() {
   const { authenticated, user } = useAppSelector(state => state.auth)
-  const { queue: modals } = useAppSelector(state => state.modal)
+  const modals = useAppSelector(state => state.modal.queue)
+  const flashes = useAppSelector(state => state.flash.value)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const location = useLocation()
-
-  if (!authenticated) {
-    return <Navigate to={"/login?from=" + location.pathname} />
-  }
 
   const [open, setOpen] = useState({
     sidebar: Boolean(Number(localStorage.getItem('sidebar_open') || 0)),
@@ -68,6 +66,10 @@ export default function () {
       .then(() => navigate('/login'))
   }
 
+  if (!authenticated) {
+    return <Navigate to={"/login?from=" + location.pathname} />
+  }
+
   return (
     <>
       <div onClick={focusout} className="relative flex w-full h-screen bg-gray-200 dark:bg-gray-900 dark:text-gray-300">
@@ -75,7 +77,7 @@ export default function () {
           'w-64': open.sidebar,
           'w-16': !open.sidebar,
         })}>
-          <div className="sticky top-0 flex-none flex items-center justify-between w-full h-16 dark:bg-slate-800 border-b dark:border-slate-700 px-4">
+          <div className="sticky top-0 z-10 flex-none flex items-center justify-between w-full h-16 dark:bg-slate-800 border-b dark:border-slate-700 px-4">
             <div className={classNames("flex-none flex items-center justify-center w-8 h-8", {
               'hidden': !open.sidebar,
             })} />
@@ -108,7 +110,7 @@ export default function () {
         </div>
 
         <div className="flex flex-col w-full h-screen overflow-y-auto">
-          <div className="sticky top-0 flex-none flex items-center justify-end w-full h-16 dark:bg-slate-800 border-b dark:border-slate-700 px-4">
+          <div className="sticky top-0 z-10 flex-none flex items-center justify-end w-full h-16 dark:bg-slate-800 border-b dark:border-slate-700 px-4">
             <div className="relative flex items-center justify-end w-full max-w-xs text-gray-300">
               <div className="flex-none flex items-center justify-center w-16 h-16 p-2">
                 <i className="mdi mdi-account text-xl" />
@@ -164,6 +166,29 @@ export default function () {
 
       {
         modals
+      }
+
+      {
+        flashes.length > 0 && (
+          <div className="fixed top-10 right-8 w-64 flex flex-col space-y-2 z-10">
+            {
+              flashes.map((flash, i) => {
+                setTimeout(() => dispatch(remove(i)), 3000)
+
+                return (
+                  <div key={i} className={classNames("w-full bg-white dark:bg-gray-900 dark:text-gray-200 border-l-8 px-4 py-2 rounded-md shadow dark:shadow-xl capitalize text-sm", {
+                    'border-green-500': flash.type === 'success',
+                    'border-red-500': flash.type === 'error',
+                    'border-cyan-500': flash.type === 'info',
+                    'border-orange-500': flash.type === 'warning',
+                  })}>
+                    { flash.message }
+                  </div>
+                )
+              })
+            }
+          </div>
+        )
       }
     </>
   )

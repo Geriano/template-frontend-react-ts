@@ -49,6 +49,14 @@ export const loginByToken = createAsyncThunk('auth/login-by-current-token', asyn
   }
 })
 
+export const relog = createAsyncThunk('auth/relog', async (_, api) => {
+  try {
+    return await AuthService.loginByToken(localStorage.getItem('token') || '')
+  } catch (e) {
+    return api.rejectWithValue(e)
+  }
+})
+
 export const login = createAsyncThunk('auth/login', async ({ username, password }: Login, api) => {
   try {
     return await AuthService.login(username, password)
@@ -72,7 +80,11 @@ export const logout = createAsyncThunk('auth/logout', async (_, api) => {
 export const slice = createSlice({
   name,
   initialState,
-  reducers: {},
+  reducers: {
+    removeProfilePhoto: (state: State) => {
+      state.user.profile_photo_url = undefined
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(login.fulfilled, (state: State, action: PayloadAction<LoginSuccessResponse>)  => {
       const { user, token } = action.payload
@@ -131,6 +143,28 @@ export const slice = createSlice({
       axios.defaults.headers.common.Authorization = undefined
     })
 
+    builder.addCase(relog.fulfilled, (state: State, action: PayloadAction<User>) => {
+      const { id, name, email, username, profile_photo_url, permissions, roles } = action.payload
+
+      state.authenticated = true
+      state.user.id = id
+      state.user.name = name
+      state.user.email = email
+      state.user.username = username
+      state.user.profile_photo_url = profile_photo_url
+      state.user.permissions = permissions
+      state.user.roles = roles
+
+      axios.defaults.headers.common.Authorization = `Bearer ${state.token}`
+    })
+
+    builder.addCase(relog.rejected, (state: State) => {
+      state.token = ''
+
+      localStorage.removeItem('token')
+      axios.defaults.headers.common.Authorization = undefined
+    })
+
     builder.addCase(logout.fulfilled, (state: State) => {
       state.user.id = 0
       state.user.name = ''
@@ -154,5 +188,6 @@ export const slice = createSlice({
 })
 
 export const actions = slice.actions
+export const { removeProfilePhoto } = slice.actions
 
 export default slice.reducer
