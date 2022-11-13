@@ -45,6 +45,16 @@ export default function DashboardLayout() {
   const navigate = useNavigate()
   const location = useLocation()
 
+  useEffect(() => {
+    if (flashes.length > 0) {
+      flashes.forEach((_, i) => {
+        setTimeout(() => {
+          dispatch(remove(i))
+        }, 3000)
+      })
+    }
+  }, [flashes])
+
   const [open, setOpen] = useState({
     sidebar: Boolean(Number(localStorage.getItem('sidebar_open') || 0)),
     dropdown: false,
@@ -173,8 +183,6 @@ export default function DashboardLayout() {
           <div className="fixed top-10 right-8 w-64 flex flex-col space-y-2 z-10">
             {
               flashes.map((flash, i) => {
-                setTimeout(() => dispatch(remove(i)), 3000)
-
                 return (
                   <div key={i} className={classNames("w-full bg-white dark:bg-gray-900 dark:text-gray-200 border-l-8 px-4 py-2 rounded-md shadow dark:shadow-xl capitalize text-sm", {
                     'border-green-500': flash.type === 'success',
