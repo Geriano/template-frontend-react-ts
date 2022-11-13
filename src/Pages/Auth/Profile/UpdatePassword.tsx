@@ -84,20 +84,20 @@ export default function UpdatePassword({ user }: Props) {
 
   return (
     <>
-      <div className="col-span-full md:col-span-5">
+      <div className="col-span-full md:col-span-4">
         <h1 className="text-xl font-semibold capitalize">
           update password
         </h1>
       </div>
 
-      <div className="col-span-full md:col-span-7">
+      <div className="col-span-full md:col-span-8">
         <form onSubmit={submit}>
           <Card
             footer={
              <div className="flex items-center justify-end px-2 py-1">
               <Button 
                 type="submit"
-                className="bg-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800"
+                className="bg-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800 text-white"
               >
                 <i className={classNames("mdi", {
                   'mdi-loading animate-spin': processing,
@@ -114,7 +114,7 @@ export default function UpdatePassword({ user }: Props) {
             <div className="flex flex-col space-y-2 p-4">
               <div className="flex flex-col space-y-1">
                 <div className="flex items-center space-x-2">
-                  <label htmlFor="current_password" className="flex-none w-1/4 lowercase first-letter:capitalize">
+                  <label htmlFor="current_password" className="flex-none w-1/4 lowercase first-letter:capitalize text-sm">
                     Current Password
                   </label>
 
@@ -134,7 +134,7 @@ export default function UpdatePassword({ user }: Props) {
 
               <div className="flex flex-col space-y-1">
                 <div className="flex items-center space-x-2">
-                  <label htmlFor="password" className="flex-none w-1/4 lowercase first-letter:capitalize">
+                  <label htmlFor="password" className="flex-none w-1/4 lowercase first-letter:capitalize text-sm">
                     new password
                   </label>
 
@@ -154,7 +154,7 @@ export default function UpdatePassword({ user }: Props) {
 
               <div className="flex flex-col space-y-1">
                 <div className="flex items-center space-x-2">
-                  <label htmlFor="password_confirmation" className="flex-none w-1/4 lowercase first-letter:capitalize">
+                  <label htmlFor="password_confirmation" className="flex-none w-1/4 lowercase first-letter:capitalize text-sm">
                     password confirmation
                   </label>
 

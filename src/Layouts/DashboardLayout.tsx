@@ -21,9 +21,11 @@ export const SidebarLink = ({ icon, name, to, open }: SidebarLinkProps) => {
   return (
     <Link to={to}>
       <div 
-        className={classNames("flex items-center space-x-1 border-b dark:border-gray-700 dark:hover:bg-gray-700 dark:text-white py-1 px-4 text-md hover:rounded-md transition-all duration-300", {
-          'justify-center': !open,
-          'dark:bg-gray-700 rounded-md': active,
+        className={classNames("flex items-center space-x-1 hover:bg-gray-200 border-b dark:border-gray-700 dark:hover:bg-gray-700 dark:text-white py-1 px-4 text-md transition-all duration-300", {
+          'justify-center border-t': !open,
+          'hover:rounded-md': open,
+          'bg-gray-200 dark:bg-gray-700': active,
+          'rounded-md': active && open,
         })}
       >
         <i className={icon}></i>
@@ -82,17 +84,20 @@ export default function DashboardLayout() {
 
   return (
     <>
-      <div onClick={focusout} className="relative flex w-full h-screen bg-gray-200 dark:bg-gray-900 dark:text-gray-300">
+      <div onClick={focusout} className="relative flex w-full h-screen bg-gray-200 text-gray-700 dark:bg-gray-900 dark:text-gray-300">
         <div className={classNames("flex-none flex flex-col space-y-2 h-screen bg-gray-100 dark:bg-gray-800 overflow-y-auto transition-all duration-300", {
           'w-64': open.sidebar,
-          'w-16': !open.sidebar,
+          'w-12': !open.sidebar,
         })}>
-          <div className="sticky top-0 z-10 flex-none flex items-center justify-between w-full h-16 dark:bg-slate-800 border-b dark:border-slate-700 px-4">
+          <div className={classNames("sticky top-0 z-10 flex-none flex items-center w-full h-14 bg-gray-50 dark:bg-gray-800 border-b dark:border-slate-700", {
+            'justify-between px-4': open.sidebar,
+            'justify-center': !open.sidebar,
+          })}>
             <div className={classNames("flex-none flex items-center justify-center w-8 h-8", {
               'hidden': !open.sidebar,
             })} />
 
-            <h1 className={classNames("text-xl text-center text-white font-bold", {
+            <h1 className={classNames("text-xl text-center dark:text-white font-bold", {
               'hidden': !open.sidebar,
             })}>
               { import.meta.env.VITE_APP_NAME || 'React TS' }
@@ -101,9 +106,9 @@ export default function DashboardLayout() {
             <div className='flex-none flex items-center justify-center w-8 h-8'>
               <Button
                 onClick={e => setOpen({ ...open, sidebar: !open.sidebar })}
-                className='px-0 py-0 text-xl text-white'
+                className='px-0 py-0 text-xl dark:text-white'
               >
-                <i className={classNames("mdi mdi-chevron-double-left transition-all duration-300", {
+                <i className={classNames("mdi mdi-chevron-double-left transition-all duration-700", {
                   '-rotate-180': !open.sidebar,
                 })} />
               </Button>
@@ -120,8 +125,8 @@ export default function DashboardLayout() {
         </div>
 
         <div className="flex flex-col w-full h-screen overflow-y-auto">
-          <div className="sticky top-0 z-10 flex-none flex items-center justify-end w-full h-16 dark:bg-slate-800 border-b dark:border-slate-700 px-4">
-            <div className="relative flex items-center justify-end w-full max-w-xs text-gray-300">
+          <div className="sticky top-0 z-10 flex-none flex items-center justify-end w-full h-14 bg-gray-50 dark:bg-slate-800 border-b dark:border-slate-700 px-4">
+            <div className="relative flex items-center justify-end w-full max-w-xs dark:text-gray-300">
               <div className="flex-none flex items-center justify-center w-16 h-16 p-2">
                 <i className="mdi mdi-account text-xl" />
               </div>
@@ -133,7 +138,7 @@ export default function DashboardLayout() {
               <div className="flex-none flex items-center justify-center w-16 h-16 p-2">
                 <Button 
                   onClick={e => setOpen({ ...open, dropdown: !open.dropdown })}
-                  className='flex-none text-xl text-white'
+                  className='flex-none text-xl dark:text-white'
                 >
                   <i className="mdi mdi-menu-down" />
                 </Button>
@@ -141,13 +146,13 @@ export default function DashboardLayout() {
 
               <div 
                 ref={dropdown}
-                className={classNames("absolute right-0 w-48 bg-gray-200 dark:bg-gray-800 border dark:border-gray-700 rounded-md p-4 transition-all duration-300", {
+                className={classNames("absolute right-0 w-48 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md p-4 transition-all duration-300", {
                   '-top-[100vh]': !open.dropdown,
                   'top-12': open.dropdown,
                 })}
               >
                 <Link to="/profile">
-                  <div className="flex items-center space-x-1 border-b dark:border-gray-600 hover:text-gray-50 py-1">
+                  <div className="flex items-center space-x-1 border-b dark:border-gray-600 dark:hover:text-gray-50 py-1">
                     <i className="mdi mdi-account"></i>
                     <p className="capitalize font-semibold">
                       profile
@@ -157,7 +162,7 @@ export default function DashboardLayout() {
 
                 <Button 
                   onClick={signout}
-                  className='w-full rounded-none border-b dark:border-gray-600 px-0 hover:text-gray-50 py-1'
+                  className='w-full rounded-none border-b dark:border-gray-600 px-0 dark:hover:text-gray-50 py-1'
                 >
                   <i className="mdi mdi-logout"></i>
                   <p className="capitalize font-semibold">

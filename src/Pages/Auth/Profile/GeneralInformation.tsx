@@ -120,20 +120,20 @@ export default function GeneralInformation({ user }: Props) {
 
   return (
     <>
-      <div className="col-span-full md:col-span-5">
+      <div className="col-span-full md:col-span-4">
         <h1 className="text-xl font-semibold capitalize">
           general information
         </h1>
       </div>
 
-      <div className="col-span-full md:col-span-7">
+      <div className="col-span-full md:col-span-8">
         <form onSubmit={submit}>
           <Card
             footer={
              <div className="flex items-center justify-end px-2 py-1">
               <Button 
                 type="submit"
-                className="bg-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800"
+                className="bg-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800 text-white"
                 disabled={processing}
               >
                 <i className={classNames("mdi", {
@@ -158,7 +158,7 @@ export default function GeneralInformation({ user }: Props) {
 
                   <i 
                     onClick={changeOrRemoveProfilePhoto}
-                    className={classNames("absolute right-0 bottom-0 mdi text-lg px-2 py-1 rounded-full bg-opacity-80 backdrop-blur-sm transition-all duration-300 cursor-pointer", {
+                    className={classNames("absolute right-0 bottom-0 mdi text-lg px-2 py-1 rounded-full bg-opacity-80 backdrop-blur-sm transition-all duration-300 cursor-pointer text-white dark:text-gray-700", {
                       'bg-red-500 mdi-delete': form.photo || user.profile_photo_url,
                       'bg-blue-500 mdi-sync': !form.photo && !user.profile_photo_url,
                     })} 
@@ -170,7 +170,7 @@ export default function GeneralInformation({ user }: Props) {
 
               <div className="flex flex-col space-y-1">
                 <div className="flex items-center space-x-2">
-                  <label htmlFor="name" className="flex-none w-1/4 capitalize">
+                  <label htmlFor="name" className="flex-none w-1/4 lowercase first-letter:capitalize text-sm">
                     name
                   </label>
 
@@ -190,7 +190,7 @@ export default function GeneralInformation({ user }: Props) {
 
               <div className="flex flex-col space-y-1">
                 <div className="flex items-center space-x-2">
-                  <label htmlFor="username" className="flex-none w-1/4 capitalize">
+                  <label htmlFor="username" className="flex-none w-1/4 lowercase first-letter:capitalize text-sm">
                     username
                   </label>
 
@@ -210,7 +210,7 @@ export default function GeneralInformation({ user }: Props) {
 
               <div className="flex flex-col space-y-1">
                 <div className="flex items-center space-x-2">
-                  <label htmlFor="email" className="flex-none w-1/4 capitalize">
+                  <label htmlFor="email" className="flex-none w-1/4 lowercase first-letter:capitalize text-sm">
                     email
                   </label>
 
