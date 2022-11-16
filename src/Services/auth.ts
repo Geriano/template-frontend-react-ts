@@ -45,11 +45,10 @@ export interface RegsiterSuccessResponse {
 }
 
 export const loginByToken = async (token: string) => {
-  const { data: response } = await axios.get(route('authentication', 'user')!, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    }
-  })
+  axios.defaults.headers.common.Authorization = `Bearer ${token}`
+  const { data: response } = await axios.get(route('authentication', 'user')!)
+
+  localStorage.setItem('token', token)
 
   return response as User
 }

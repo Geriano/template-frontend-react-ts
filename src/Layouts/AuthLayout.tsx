@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { loginByToken } from '../Slices/auth'
+import { loginByToken, setProcessing, toggleProcessing } from '../Slices/auth'
 
 export default function () {
-  const { authenticated, token } = useAppSelector(state => state.auth)
+  const { authenticated, token, processing } = useAppSelector(state => state.auth)
   const dispatch = useAppDispatch()
-  const [processing, setProcessing] = useState(false)
   const [ready, setReady] = useState(false)
   const location = useLocation()
   const search = new URLSearchParams(location.search)
@@ -16,8 +15,7 @@ export default function () {
     if (!authenticated) {
       if (token) {
         if (!processing) {
-          setProcessing(true)
-          dispatch(loginByToken(token))
+          dispatch(loginByToken())
         }
       } else {
         setReady(true)
