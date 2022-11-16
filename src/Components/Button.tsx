@@ -13,7 +13,7 @@ export default function Button(props: React.PropsWithChildren<Props>) {
     <button
       type="button"
       {...props}
-      className={classNames("px-3 py-1 rounded-md capitalize text-sm transition-all duration-300", props.className)}
+      className={classNames("px-3 py-1 rounded-md capitalize text-sm transition-all duration-300 shadow", props.className)}
     >
       <div className="flex items-center space-x-1">
         {props.children}

@@ -133,7 +133,7 @@ export default function GeneralInformation({ user }: Props) {
              <div className="flex items-center justify-end px-2 py-1">
               <Button 
                 type="submit"
-                className="bg-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800 text-white"
+                className="bg-success-0 hover:bg-success-1 text-white py-2 px-6"
                 disabled={processing}
               >
                 <i className={classNames("mdi", {
@@ -151,21 +151,21 @@ export default function GeneralInformation({ user }: Props) {
             <div className="flex flex-col space-y-2 p-4">
               <div className="flex flex-col space-y-2 items-center justify-center pb-4">
                 <input ref={file} onChange={displayTemporaryImage} type="file" className="hidden" />
-                <div className="relative flex items-center justify-center w-28 h-28 border dark:border-gray-700 rounded-full">
+                <div className="relative flex items-center justify-center w-20 h-20 border dark:border-gray-700 rounded-full">
                   { !form.photo && user.profile_photo_url && <img src={route('profile', 'photo', { path: user.profile_photo_url })} alt={user.name} className="w-full h-full object-cover object-center rounded-full" /> }
                   { form.photo && <img src={URL.createObjectURL(form.photo)} alt={user.name} className="w-full h-full object-cover object-center rounded-full" /> }
-                  { (form.photo === null && (user.profile_photo_url === null || user.profile_photo_url === '')) && <i className="mdi mdi-account text-5xl font-bold"></i> }
+                  { (form.photo === null && (user.profile_photo_url === null || user.profile_photo_url === '')) && <i className="mdi mdi-account text-3xl font-bold"></i> }
 
                   <i 
                     onClick={changeOrRemoveProfilePhoto}
-                    className={classNames("absolute right-0 bottom-0 mdi text-lg px-2 py-1 rounded-full bg-opacity-80 backdrop-blur-sm transition-all duration-300 cursor-pointer text-white dark:text-gray-700", {
-                      'bg-red-500 mdi-delete': form.photo || user.profile_photo_url,
-                      'bg-blue-500 mdi-sync': !form.photo && !user.profile_photo_url,
+                    className={classNames("absolute right-0 bottom-0 mdi px-2 py-1 rounded-full bg-opacity-80 backdrop-blur-sm transition-all duration-300 cursor-pointer text-white dark:text-gray-700 shadow", {
+                      'bg-danger-0 mdi-delete': form.photo || user.profile_photo_url,
+                      'bg-primary-0 hover:bg-primary-1 mdi-sync': !form.photo && !user.profile_photo_url,
                     })} 
                   />
                 </div>
 
-                <p className="text-red-500 text-right text-sm">{errors.photo}</p>
+                <p className="text-danger-0 text-right text-sm">{errors.photo}</p>
               </div>
 
               <div className="flex flex-col space-y-1">
@@ -185,7 +185,7 @@ export default function GeneralInformation({ user }: Props) {
                   />
                 </div>
 
-                <p className="text-red-500 text-right text-sm">{errors.name}</p>
+                <p className="text-danger-0 text-right text-sm">{errors.name}</p>
               </div>
 
               <div className="flex flex-col space-y-1">
@@ -205,7 +205,7 @@ export default function GeneralInformation({ user }: Props) {
                   />
                 </div>
 
-                <p className="text-red-500 text-right text-sm">{errors.username}</p>
+                <p className="text-danger-0 text-right text-sm">{errors.username}</p>
               </div>
 
               <div className="flex flex-col space-y-1">
@@ -225,7 +225,7 @@ export default function GeneralInformation({ user }: Props) {
                   />
                 </div>
 
-                <p className="text-red-500 text-right text-sm">{errors.email}</p>
+                <p className="text-danger-0 text-right text-sm">{errors.email}</p>
               </div>
             </div>
           </Card>

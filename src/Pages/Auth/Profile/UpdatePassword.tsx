@@ -97,7 +97,8 @@ export default function UpdatePassword({ user }: Props) {
              <div className="flex items-center justify-end px-2 py-1">
               <Button 
                 type="submit"
-                className="bg-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800 text-white"
+                className="bg-success-0 hover:bg-success-1 text-white py-2 px-6"
+                disabled={processing}
               >
                 <i className={classNames("mdi", {
                   'mdi-loading animate-spin': processing,
@@ -129,7 +130,7 @@ export default function UpdatePassword({ user }: Props) {
                   />
                 </div>
 
-                <p className="text-red-500 text-right text-sm">{errors.current_password}</p>
+                <p className="text-danger-0 text-right text-sm">{errors.current_password}</p>
               </div>
 
               <div className="flex flex-col space-y-1">
@@ -149,7 +150,7 @@ export default function UpdatePassword({ user }: Props) {
                   />
                 </div>
 
-                <p className="text-red-500 text-right text-sm">{errors.password}</p>
+                <p className="text-danger-0 text-right text-sm">{errors.password}</p>
               </div>
 
               <div className="flex flex-col space-y-1">
@@ -169,7 +170,7 @@ export default function UpdatePassword({ user }: Props) {
                   />
                 </div>
 
-                <p className="text-red-500 text-right text-sm">{errors.password_confirmation}</p>
+                <p className="text-danger-0 text-right text-sm">{errors.password_confirmation}</p>
               </div>
             </div>
           </Card>
