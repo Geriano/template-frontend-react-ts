@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { route } from '../service'
+import { route } from "../route"
 
 export interface Permission {
   name: string

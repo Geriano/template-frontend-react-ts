@@ -5,7 +5,7 @@ import Button from "../../../Components/Button";
 import Card from "../../../Components/Card";
 import Input from "../../../Components/Input";
 import { useAppDispatch } from "../../../hooks";
-import { route } from "../../../service";
+import { route } from "../../../route";
 import { User, ValidationErrorResponse } from "../../../Services/auth";
 import { success } from "../../../Slices/flash";
 
