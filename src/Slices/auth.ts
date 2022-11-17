@@ -163,10 +163,10 @@ export const slice = createSlice({
       state.user.profile_photo_url = profile_photo_url
       state.user.permissions = permissions
       state.user.roles = roles
+      state.token = localStorage.getItem('token')!
+      state.processing = false
       
       axios.defaults.headers.common.Authorization = `Bearer ${state.token}`
-
-      state.processing = false
     })
 
     builder.addCase(loginByToken.rejected, (state: State) => {
