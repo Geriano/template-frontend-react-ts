@@ -1,7 +1,8 @@
+import { AxiosError } from 'axios'
 import { useEffect, useState } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { loginByToken, setProcessing, toggleProcessing } from '../Slices/auth'
+import { loginByToken } from '../Slices/auth'
 
 export default function () {
   const { authenticated, token, processing } = useAppSelector(state => state.auth)
@@ -15,7 +16,12 @@ export default function () {
     if (!authenticated) {
       if (token) {
         if (!processing) {
-          dispatch(loginByToken())
+          dispatch(loginByToken()).unwrap()
+                                  .catch((e: AxiosError) => {
+                                    if (e?.response?.status === 401) {
+                                      window.location.pathname = `${to}`
+                                    }
+                                  })
         }
       } else {
         setReady(true)
