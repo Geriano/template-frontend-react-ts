@@ -1,7 +1,7 @@
 export interface Service<T> {
   hostname: string
   prefix?: string
-  routes: Routes<T>
+  routes: Routes<T>,
 }
 
 export type Routes<T> = {
@@ -21,7 +21,13 @@ export interface RouteParam {
   }
 }
 
-export const services = {
+export type Services = {
+  authentication: Service<'login'|'register'|'logout'|'user'>
+  profile: Service<'update-user-general-information'|'photo'|'remove-profile-photo'|'update-user-password'>
+  permission: Service<'all'|'store'|'update'|'destroy'>
+}
+
+export const services: Services = {
   "authentication": {
     "hostname": "http://localhost:3333",
     "routes": {
@@ -42,7 +48,7 @@ export const services = {
         "path": "user",
       },
     },
-  } as Service<'login'|'register'|'logout'|'user'>,
+  },
   "profile": {
     "hostname": "http://localhost:3333",
     "routes": {
@@ -68,7 +74,7 @@ export const services = {
         "path": "/update-user-password",
       },
     },
-  } as Service<'update-user-general-information'|'photo'|'remove-profile-photo'|'update-user-password'>,
+  },
   "permission": {
     "hostname": "http://localhost:3333",
     "prefix": "/permission",
@@ -100,7 +106,7 @@ export const services = {
         },
       },
     },
-  } as Service<'all'|'store'|'update'|'destroy'>,
+  },
 }
 
 export type ServiceNames = keyof typeof services
