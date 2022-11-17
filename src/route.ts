@@ -4,7 +4,7 @@ const background = typeof queueMicrotask === 'function' ? queueMicrotask : setTi
 const sanitize = (url: string) => url.replace(/\/+/g, '/').replace(/^\/|\/$/g, '').replace(/(http|https):\//, '$1://')
 
 export function route(service: ServiceNames, route: string, params?: any): string | undefined {
-  const error = (key: string) => background(() => {
+  const missingRouteParameter = (key: string) => background(() => {
     throw Error(`missing parameter [${key}] on [${service}][${route}]`);
   });
 
@@ -31,11 +31,11 @@ export function route(service: ServiceNames, route: string, params?: any): strin
               if (typeof params === 'object' && params.hasOwnProperty(key)) {
                 args[key] = params[key];
               } else {
-                error(key);
+                missingRouteParameter(key);
               }
             }
           } else {
-            error(key);
+            missingRouteParameter(key);
           }
         } else {
           if (typeof params !== 'undefined' && params !== null) {
