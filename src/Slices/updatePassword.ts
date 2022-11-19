@@ -59,7 +59,6 @@ export const update = createAsyncThunk('update', async (_, api) => {
     } else {
       return api.rejectWithValue(e)
     }
-    
   }
 })
 

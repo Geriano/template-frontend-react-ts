@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { login } from "./auth"
-
+import { AxiosError } from "axios"
+import { ValidationErrorResponse } from "../Services/auth"
+import { RootState } from "../store"
+import { login as logon } from "./auth"
 export interface State {
   processing: boolean
   form: {
@@ -27,9 +29,41 @@ export const initialState: State = {
 }
 
 interface SetterPayload {
-  key: 'username'|'password'
+  key: keyof typeof initialState.form
   value: string
 }
+
+export const login = createAsyncThunk('login', async (_, api) => {
+  const { login } = api.getState() as RootState
+  
+  return api.dispatch(logon({
+    username: login.form.username,
+    password: login.form.password,
+  })).unwrap().catch(e => {
+    if (e.status === 422) {
+      const { errors } = e.data as ValidationErrorResponse
+
+      errors.forEach(error => {
+        api.dispatch(setError({
+          key: error.field as keyof typeof initialState.errors,
+          value: error.message,
+        }))
+      })
+    } else if (e.status === 401) {
+      api.dispatch(setError({
+        key: 'password',
+        value: e.data,
+      }))
+    } else {
+      return api.rejectWithValue(e)
+    }
+  }).finally(() => {
+    api.dispatch(setForm({
+      key: 'password',
+      value: "",
+    }))
+  })
+})
 
 export const slice = createSlice({
   name,
@@ -52,6 +86,22 @@ export const slice = createSlice({
       state.errors.username = ''
       state.errors.password = ''
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(login.pending, (state: State) => {
+      state.processing = true
+
+      state.errors.username = ''
+      state.errors.password = ''
+    })
+
+    builder.addCase(login.fulfilled, (state: State) => {
+      state.processing = false
+    })
+
+    builder.addCase(login.rejected, (state: State) => {
+      state.processing = false
+    })
   },
 })
 

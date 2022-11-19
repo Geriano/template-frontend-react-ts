@@ -74,7 +74,7 @@ export const login = createAsyncThunk('auth/login', async ({ username, password 
   } catch (e) {
     const error = e as AxiosError
     return api.rejectWithValue({
-      code: error.response?.status,
+      status: error.response?.status,
       data: error.response?.data,
     })
   }
