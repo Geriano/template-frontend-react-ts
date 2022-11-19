@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 import axios, { AxiosError } from "axios"
 import route from "../route"
-import { User } from "../Services/auth"
+import { User, ValidationErrorResponse } from "../Services/auth"
 import { RootState } from "../store"
 import { relog } from "./auth"
 import { success } from "./flash"
@@ -48,7 +48,20 @@ export const removeProfilePhoto = createAsyncThunk('removePhotoProfile', async (
     api.dispatch(relog())
   } catch (e) {
     const error = e as AxiosError
-    api.rejectWithValue(error.response)
+    
+    if (error.response?.status === 422) {
+      const { errors: es } = error.response?.data as ValidationErrorResponse
+      es.forEach(error => {
+        const field = error.field as keyof typeof initialState.errors
+        const message = error.message
+
+        api.dispatch(setError({
+          key: field, value: message,
+        }))
+      })
+    } else {
+      api.rejectWithValue(e)
+    }
   }
 })
 
@@ -65,7 +78,21 @@ export const update = createAsyncThunk('update', async (_, api) => {
     api.dispatch(success(response.message))
     api.dispatch(relog())
   } catch (e) {
-    api.rejectWithValue(e)
+    const error = e as AxiosError
+    
+    if (error.response?.status === 422) {
+      const { errors: es } = error.response?.data as ValidationErrorResponse
+      es.forEach(error => {
+        const field = error.field as keyof typeof initialState.errors
+        const message = error.message
+
+        api.dispatch(setError({
+          key: field, value: message,
+        }))
+      })
+    } else {
+      api.rejectWithValue(e)
+    }
   }
 })
 
