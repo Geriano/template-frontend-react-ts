@@ -3,7 +3,7 @@ import auth from "./Slices/auth"
 import modal from "./Slices/modal"
 import flash from "./Slices/flash"
 import login from "./Slices/login"
-import generalProfile from './Slices/profile/general'
+import generalInformation from "./Slices/generalInformation"
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +11,7 @@ export const store = configureStore({
     modal,
     flash,
     login,
-    generalProfile,
+    generalInformation,
   },
   middleware: middleware => middleware({
     serializableCheck: false,
