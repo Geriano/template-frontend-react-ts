@@ -1,78 +1,56 @@
 import axios, { AxiosError } from "axios";
 import classNames from "classnames";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "../../../Components/Button";
 import Card from "../../../Components/Card";
 import Input from "../../../Components/Input";
-import { useAppDispatch } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { route } from "../../../route";
 import { User, ValidationErrorResponse } from "../../../Services/auth";
 import { relog } from "../../../Slices/auth";
 import { success } from "../../../Slices/flash";
+import { removeProfilePhoto, setForm, setFromUser, update } from "../../../Slices/generalInformation";
 
 interface Props {
   user: User
 }
 
 export default function GeneralInformation({ user }: Props) {
+  const { form, errors, processing } = useAppSelector(state => state.generalInformation)
   const dispatch = useAppDispatch()
-  const [processing, setProcessing] = useState(false)
+
+  useEffect(() => {
+    dispatch(setFromUser(user))
+  }, [])
 
   const file = useRef<HTMLInputElement|null>(null)
 
-  const [form, setForm] = useState({
-    photo: null as File|null,
-    name: user.name,
-    username: user.username,
-    email: user.email,
-  })
-
-  const [errors, setErrors] = useState({
-    photo: '',
-    name: '',
-    username: '',
-    email: '',
-  })
-
-  const changeOrRemoveProfilePhoto = async (e: React.MouseEvent) => {
+  const changeOrRemoveProfilePhoto = (e: React.MouseEvent) => {
     if (user.profile_photo_url) {
-      try {
-        const { data: response } = await axios.delete(route('profile', 'remove-profile-photo')!)
-        
-        dispatch(success(response.message))
-        dispatch(relog())
-
-        setForm({
-          ...form, photo: null
-        })
-      } catch (e) {
-        console.log(e)
-      }
+      dispatch(removeProfilePhoto())
     } else {
-      if (form.photo) {
-        setForm({
-          ...form,
-          photo: null,
-        })
-      } else {
-        file.current?.click()
-      }
+      form.photo === null ? file.current?.click() : dispatch(setForm({
+        key: 'photo',
+        value: null,
+      }))
     }
   }
 
   const displayTemporaryImage = (e: React.FormEvent) => {
     const target = e.target as HTMLInputElement
-    setForm({
-      ...form, photo: target.files![0],
-    })
+    const files = target.files as FileList
+
+    dispatch(setForm({
+      key: 'photo',
+      value: files[0],
+    }))
   }
 
   const input = (key: 'name'|'username'|'email', e: React.FormEvent) => {
     const target = e.target as HTMLInputElement
-    setForm({
-      ...form,
-      [key]: target.value
-    })
+    dispatch(setForm({
+      key, value: target.value,
+    }))
   }
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -82,40 +60,7 @@ export default function GeneralInformation({ user }: Props) {
       return
     }
 
-    setProcessing(true)
-    
-    try {
-      const { data: response } = await axios.patch(route('profile', 'update-user-general-information')!, form, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-      })
-      
-      dispatch(success(response.message))
-      dispatch(relog())
-      setErrors({
-        photo: '',
-        name: '',
-        email: '',
-        username: '',
-      })
-    } catch (e) {
-      const error = e as AxiosError
-      if (error.response?.status === 422) {
-        const { errors: es } = error.response?.data as ValidationErrorResponse
-        const entries = Object.fromEntries(es.map(error => [error.field, error.message]))
-        console.log(entries)
-        setErrors({
-          photo: '',
-          name: '',
-          email: '',
-          username: '',
-          ...entries,
-        })
-      }
-    } finally {
-      setProcessing(false)
-    }
+    dispatch(update())
   }
 
   return (

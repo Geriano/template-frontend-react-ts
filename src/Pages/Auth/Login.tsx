@@ -1,13 +1,10 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { login } from "../../Slices/auth";
 import Card from "../../Components/Card";
-import Input from "../../Components/Input";
-import { RequestRejected, ValidationErrorResponse } from "../../Services/auth";
-import classNames from "classnames";
-import { reset, setError, setForm, toggleProcessing } from "../../Slices/login";
+import { login, setForm } from "../../Slices/login";
+import FloatingInput from "../../Components/FloatingInput";
 
-export default function () {
+export default function Login() {
   const { form, errors, processing } = useAppSelector(state => state.login)
   const dispatch = useAppDispatch()
   
@@ -19,34 +16,7 @@ export default function () {
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    dispatch(login({
-      username: form.username, 
-      password: form.password,
-    }))
-      .unwrap()
-      .then(() => dispatch(reset()))
-      .catch((e: RequestRejected) => {
-        if (e.code === 422) {
-          const { errors: es } = e.data as ValidationErrorResponse
-          const entries = Object.fromEntries(es.map(error => [error.field, error.message]))
-
-          dispatch(setError({
-            key: 'username',
-            value: entries.username || '',
-          }))
-
-          dispatch(setError({
-            key: 'password',
-            value: entries.password || '',
-          }))
-
-          dispatch(setForm({
-            key: 'password',
-            value: '',
-          }))
-        }
-      })
-      .finally(() => dispatch(toggleProcessing()))
+    dispatch(login())
   }
 
   return (
@@ -71,39 +41,23 @@ export default function () {
         }
       >
         <div className="flex flex-col space-y-2 py-4 px-6">
-          <label htmlFor="username" className="capitalize">
-            username
-          </label>
-
-          <Input
+          <FloatingInput
+            label="Username"
             onInput={e => input('username', e)}
             value={form.username}
             type="text"
             name="username"
-            placeholder="Username"
-            className={classNames("dark:border-gray-700", {
-              'outline outline-1 outline-danger-0 focus:outline-danger-0': errors.username
-            })}
             autoFocus
-            required
           />
 
           { errors.username && <p className="text-right text-danger-0 text-sm">{errors.username}</p> }
-
-          <label htmlFor="password" className="capitalize">
-            password
-          </label>
-
-          <Input
+          
+          <FloatingInput
+            label="Password"
             onInput={e => input('password', e)}
             value={form.password}
             type="password"
             name="password"
-            placeholder="Password"
-            className={classNames("dark:border-gray-700", {
-              'outline outline-1 outline-danger-0 focus:outline-danger-0': errors.password
-            })}
-            required
           />
 
           { errors.password && <p className="text-right text-danger-0 text-sm">{errors.password}</p> }

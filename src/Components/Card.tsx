@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, ReactElement } from 'react'
+import { PropsWithChildren, ReactElement } from 'react'
 import classNames from 'classnames'
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   className?: string
 }
 
-export default function (props: PropsWithChildren<Props>) {
+export default function Card(props: PropsWithChildren<Props>) {
   const { header, footer, className, children } = props
 
   return (
