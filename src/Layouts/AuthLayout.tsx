@@ -4,7 +4,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { loginByToken } from '../Slices/auth'
 
-export default function () {
+export default function AuthLayout() {
   const { authenticated, token, processing } = useAppSelector(state => state.auth)
   const dispatch = useAppDispatch()
   const [ready, setReady] = useState(false)
