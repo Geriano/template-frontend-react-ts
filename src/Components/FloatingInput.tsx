@@ -6,6 +6,7 @@ interface Props {
   name?: string
   value?: any
   autoFocus?: boolean
+  required?: boolean,
   onInput?: (event: React.FormEvent<HTMLInputElement>) => void
   onChange?: (event: React.FormEvent<HTMLInputElement>) => void
 }

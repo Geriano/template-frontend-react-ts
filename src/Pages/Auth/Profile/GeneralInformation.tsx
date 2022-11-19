@@ -3,6 +3,7 @@ import classNames from "classnames";
 import React, { useEffect, useRef, useState } from "react";
 import Button from "../../../Components/Button";
 import Card from "../../../Components/Card";
+import FloatingInput from "../../../Components/FloatingInput";
 import Input from "../../../Components/Input";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { route } from "../../../route";
@@ -113,62 +114,41 @@ export default function GeneralInformation({ user }: Props) {
                 <p className="text-danger-0 text-right text-sm">{errors.photo}</p>
               </div>
 
-              <div className="flex flex-col space-y-1">
-                <div className="flex items-center space-x-2">
-                  <label htmlFor="name" className="flex-none w-1/4 lowercase first-letter:capitalize text-sm">
-                    name
-                  </label>
-
-                  <Input
-                    onInput={e => input('name', e)}
-                    value={form.name}
-                    type="text"
-                    name="name"
-                    placeholder="Name"
-                    className="dark:border-gray-700"
-                    required={false}
-                  />
-                </div>
+              <div className="flex flex-col space-y-1 max-w-sm">
+                <FloatingInput
+                  onInput={e => input('name', e)}
+                  value={form.name}
+                  type="text"
+                  name="name"
+                  label="Name"
+                  required
+                />
 
                 <p className="text-danger-0 text-right text-sm">{errors.name}</p>
               </div>
 
-              <div className="flex flex-col space-y-1">
-                <div className="flex items-center space-x-2">
-                  <label htmlFor="username" className="flex-none w-1/4 lowercase first-letter:capitalize text-sm">
-                    username
-                  </label>
-
-                  <Input
-                    onInput={e => input('username', e)}
-                    value={form.username}
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    className="dark:border-gray-700"
-                    required={false}
-                  />
-                </div>
+              <div className="flex flex-col space-y-1 max-w-sm">
+                <FloatingInput
+                  onInput={e => input('username', e)}
+                  value={form.username}
+                  type="text"
+                  name="username"
+                  label="Username"
+                  required
+                />
 
                 <p className="text-danger-0 text-right text-sm">{errors.username}</p>
               </div>
 
-              <div className="flex flex-col space-y-1">
-                <div className="flex items-center space-x-2">
-                  <label htmlFor="email" className="flex-none w-1/4 lowercase first-letter:capitalize text-sm">
-                    email
-                  </label>
-
-                  <Input
-                    onInput={e => input('email', e)}
-                    value={form.email}
-                    type="email"
-                    name="email"
-                    placeholder="Username"
-                    className="dark:border-gray-700"
-                    required={false}
-                  />
-                </div>
+              <div className="flex flex-col space-y-1 max-w-sm">
+                <FloatingInput
+                  onInput={e => input('email', e)}
+                  value={form.email}
+                  type="email"
+                  name="email"
+                  label="Username"
+                  required
+                />
 
                 <p className="text-danger-0 text-right text-sm">{errors.email}</p>
               </div>
