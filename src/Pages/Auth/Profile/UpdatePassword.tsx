@@ -4,37 +4,26 @@ import React, { useState } from "react";
 import Button from "../../../Components/Button";
 import Card from "../../../Components/Card";
 import Input from "../../../Components/Input";
-import { useAppDispatch } from "../../../hooks";
+import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { route } from "../../../route";
 import { User, ValidationErrorResponse } from "../../../Services/auth";
 import { success } from "../../../Slices/flash";
+import { setForm, update } from "../../../Slices/updatePassword";
 
 interface Props {
   user: User
 }
 
 export default function UpdatePassword({ user }: Props) {
+  const { form, errors, processing } = useAppSelector(state => state.updatePassword)
   const dispatch = useAppDispatch()
-  const [processing, setProcessing] = useState(false)
-
-  const [form, setForm] = useState({
-    current_password: '',
-    password: '',
-    password_confirmation: '',
-  })
-
-  const [errors, setErrors] = useState({
-    current_password: '',
-    password: '',
-    password_confirmation: '',
-  })
-
+  
   const input = (key: 'current_password'|'password'|'password_confirmation', e: React.FormEvent) => {
     const target = e.target as HTMLInputElement
-    setForm({
-      ...form,
-      [key]: target.value
-    })
+    
+    dispatch(setForm({
+      key, value: target.value,
+    }))
   }
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -44,42 +33,7 @@ export default function UpdatePassword({ user }: Props) {
       return
     }
 
-    setProcessing(true)
-    
-    try {
-      const { data: response } = await axios.patch(route('profile', 'update-user-password')!, form, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-      })
-      
-      dispatch(success(response.message))
-      setErrors({
-        current_password: '',
-        password: '',
-        password_confirmation: '',
-      })
-      setForm({
-        current_password: '',
-        password: '',
-        password_confirmation: '',
-      })
-    } catch (e) {
-      const error = e as AxiosError
-      if (error.response?.status === 422) {
-        const { errors: es } = error.response?.data as ValidationErrorResponse
-        const entries = Object.fromEntries(es.map(error => [error.field, error.message]))
-
-        setErrors({
-          current_password: '',
-          password: '',
-          password_confirmation: '',
-          ...entries,
-        })
-      }
-    } finally {
-      setProcessing(false)
-    }
+    dispatch(update())
   }
 
   return (

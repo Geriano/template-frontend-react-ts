@@ -4,6 +4,7 @@ import modal from "./Slices/modal"
 import flash from "./Slices/flash"
 import login from "./Slices/login"
 import generalInformation from "./Slices/generalInformation"
+import updatePassword from "./Slices/updatePassword"
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     flash,
     login,
     generalInformation,
+    updatePassword,
   },
   middleware: middleware => middleware({
     serializableCheck: false,

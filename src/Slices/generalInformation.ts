@@ -59,9 +59,9 @@ export const removeProfilePhoto = createAsyncThunk('removePhotoProfile', async (
           key: field, value: message,
         }))
       })
-    } else {
-      api.rejectWithValue(e)
     }
+    
+    api.rejectWithValue(e)
   }
 })
 
@@ -91,7 +91,7 @@ export const update = createAsyncThunk('update', async (_, api) => {
         }))
       })
     } else {
-      api.rejectWithValue(e)
+      return api.rejectWithValue(e)
     }
   }
 })
