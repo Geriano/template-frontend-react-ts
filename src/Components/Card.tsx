@@ -12,11 +12,11 @@ export default function Card(props: PropsWithChildren<Props>) {
 
   return (
     <div className={classNames("bg-white dark:bg-gray-800 rounded-md h-full shadow dark:shadow-xl", className)}>
-      { header && <div className='sticky top-0 w-full bg-gray-100 dark:bg-gray-700 rounded-t-md'>{header}</div> }
+      { header && <div className='sticky top-0 w-full bg-gray-100 dark:bg-gray-700 rounded-t-md z-10'>{header}</div> }
       <div className={classNames("w-full h-full", { "rounded-t-md": !header, "rounded-b-md": !footer })}>
         {children}
       </div>
-      { footer && <div className='sticky bottom-0 w-full bg-gray-100 dark:bg-gray-700 rounded-b-md'>{footer}</div> }
+      { footer && <div className='sticky bottom-0 w-full bg-gray-100 dark:bg-gray-700 rounded-b-md z-10'>{footer}</div> }
     </div>
   )
 }
