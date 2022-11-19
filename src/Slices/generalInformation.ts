@@ -78,7 +78,6 @@ export const slice = createSlice({
       state.form.email = action.payload.email
       state.form.username = action.payload.username
     },
-    
     setForm: (state: State, action: PayloadAction<{ key: keyof typeof initialState.form, value: any }>) => {
       state.form[action.payload.key] = action.payload.value
     },
@@ -99,6 +98,31 @@ export const slice = createSlice({
       state.errors.email = ''
       state.errors.username = ''
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(removeProfilePhoto.pending, (state: State) => {
+      state.processing = true
+    })
+
+    builder.addCase(removeProfilePhoto.fulfilled, (state: State) => {
+      state.processing = false
+    })
+
+    builder.addCase(removeProfilePhoto.rejected, (state: State) => {
+      state.processing = false
+    })
+
+    builder.addCase(update.pending, (state: State) => {
+      state.processing = true
+    })
+
+    builder.addCase(update.fulfilled, (state: State) => {
+      state.processing = false
+    })
+
+    builder.addCase(update.rejected, (state: State) => {
+      state.processing = false
+    })
   },
 })
 
